@@ -1,5 +1,5 @@
 application: issue-1
-version: test
+version: d
 runtime: python27
 api_version: 1
 threadsafe: true
