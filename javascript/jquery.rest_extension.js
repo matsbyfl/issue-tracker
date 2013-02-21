@@ -25,6 +25,9 @@ jQuery.extend({
     putJSON: function(url, data, callback) {
         return _ajax_request(url, data, callback, 'json', 'PUT');
     },
+    postJSON: function(url, data, callback) {
+        return _ajax_request(url, data, callback, 'json', 'POST');
+    },
     deleteJSON: function(url, data, callback, type) {
         return _ajax_request(url, data, callback, 'json', 'DELETE');
     }
