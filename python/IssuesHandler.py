@@ -19,7 +19,9 @@ class IssuesHandler(webapp.RequestHandler):
 		issue = Issue()
 		issue.project = Project().get(projectKey)
 		issue.summary = getArgument(self.request, 'summary', '"summary" is a required field!')
-		issue.text = self.request.get('text')
+		issue.text = self.request.get('text') or ""
+		closed = self.request.get('closed')
+		if closed: issue.closed = closed.lower() == "true"
 		issue.put()
 		url = issue.url(self.request.url)
 		self.response.headers.add_header("Location", url)
