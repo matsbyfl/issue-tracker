@@ -1,4 +1,5 @@
 /* Extend jQuery with functions for PUT and DELETE requests. */
+/* http://homework.nwsnet.de/releases/9132/ */
 
 function _ajax_request(url, data, callback, type, method) {
     if (jQuery.isFunction(data)) {

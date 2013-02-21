@@ -1,51 +1,35 @@
 from google.appengine.ext import db
 from google.appengine.api import users
+from requestUtil import NotFoundException
 import json
-	
-VERSION = "1"
-	
-class Project(db.Model):
-	name = db.StringProperty()
-	date = db.DateTimeProperty(auto_now_add=True)
-	createdBy = db.UserProperty(auto_current_user=True)
-	#users = db.StringListProperty()
-	#notClosedIssues = db.IntegerProperty(default=0)
-	
-	def toJSON(self):
-		return JSONGenerator(self)
-		
-	def url(self):
-		return "/" + VERSION + makeUrl(self)
-	
-class Issue(db.Model):
+from JSONGenerator import JSONGenerator
+
+class Parrent(db.Model):
 	date = db.DateTimeProperty(auto_now_add=True)
 	author = db.UserProperty(auto_current_user_add=True)
-	subject = db.StringProperty()
-	text = db.StringProperty()
-	project = db.ReferenceProperty(Project, collection_name='issues')
-	closed = db.BooleanProperty(default=False)
-	
 	def toJSON(self):
 		return JSONGenerator(self)
-	
-	def url(self):
-		return "/" + VERSION + makeUrl(self, self.project)
 
-def makeUrl(obj, parent=None):
-	url = "/%ss/%s" % (obj.__class__.__name__.lower(), obj.key())
-	if parent:
-		url = makeUrl(parent) + url
-	return url
+	def url(self, baseUrl):
+		if not baseUrl.endswith('/'):
+			baseUrl += '/'
+		return baseUrl + str(self.key())
 
-def JSONGenerator(obj):
-	tempdict = dict([(p, unicode(getattr(obj, p))) for p in obj.properties()])
-	tempdict['key'] = unicode(obj.key())
-	tempdict['id'] = unicode(obj.key().id())
-	jsonString = json.dumps(tempdict).replace('\"True\"', 'true').replace('\"False\"', 'false')
-	return jsonString
+	def get(self, key):
+		item = super(Parrent, self).get(key)
+		if not item:
+			raise NotFoundException('The key for the object you spessified whas not found! Key: %s' % key)
+		return item
 
-class EntityNotFoundException(Exception):
-	def __init__(self, value):
-		self.value = value
-	def __str__(self):
-		return repr(self.value)
+class Project(Parrent):
+	name = db.StringProperty()
+
+class Issue(Parrent):
+	project = db.ReferenceProperty(Project, collection_name='issues')
+	summary = db.StringProperty()
+	text = db.StringProperty()
+	closed = db.BooleanProperty(default=False)
+
+class Comment(Parrent):
+	issue = db.ReferenceProperty(Issue, collection_name='comments')
+	text = db.StringProperty()
