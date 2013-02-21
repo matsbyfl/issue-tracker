@@ -10,12 +10,10 @@ class IssueHandler(webapp.RequestHandler):
 	
 	@htmlCodes
 	def get(self, projectKey, key):
-		logging.info("get request: "+ str(self.request))
 		self.response.out.write( Issue().get(key).toJSON() )
 	
 	@htmlCodes
 	def post(self, projectKey, key): #update
-		logging.info("post request: "+ str(self.request))
 		issue = Issue().get(key)
 		issue.project = Project().get(projectKey)
 		issue.summary = self.request.get('summary') or issue.summary
@@ -29,7 +27,6 @@ class IssueHandler(webapp.RequestHandler):
 	
 	@htmlCodes
 	def delete(self, projectKey, key):
-		logging.info("delete request: "+ str(self.request))
 		issue = Issue().get(key)
 		keys = [key]
 		for comment in issue.comments:

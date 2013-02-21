@@ -18,6 +18,7 @@ def getArgument(request, argumentName, errorMessage='', allowEmpty=False):
 
 def htmlCodes(func):
 	def _decorator(self, *args, **kwargs):
+		logging.info("%s request:\n\t%s" % (func.__name__, "\n\t".join( str(self.request).splitlines() )))
 		try:
 			func(self, *args, **kwargs)
 		except NotFoundException, e:

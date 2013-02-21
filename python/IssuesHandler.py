@@ -10,12 +10,10 @@ class IssuesHandler(webapp.RequestHandler):
 	
 	@htmlCodes
 	def get(self, projectKey):
-		logging.info("get request: "+ str(self.request))
 		self.response.out.write( JSONList( Project().get(projectKey).issues ) )
 		
 	@htmlCodes
 	def put(self, projectKey): #put on server
-		logging.info("put request: "+ str(self.request))
 		issue = Issue()
 		issue.project = Project().get(projectKey)
 		issue.summary = getArgument(self.request, 'summary', '"summary" is a required field!')

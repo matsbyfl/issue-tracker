@@ -10,12 +10,10 @@ class CommentHandler(webapp.RequestHandler):
 	
 	@htmlCodes
 	def get(self, projectKey, issueKey, key):
-		logging.info("get request: "+ str(self.request))
 		self.response.out.write( Comment().get(key).toJSON() )
 	
 	@htmlCodes
 	def post(self, projectKey, issueKey, key): #update
-		logging.info("post request: "+ str(self.request))
 		comment = Comment().get(key)
 		comment.Issue = Issue().get(issueKey)
 		comment.text = getArgument(self.request, 'text', '"text" is a required field!')
@@ -26,7 +24,6 @@ class CommentHandler(webapp.RequestHandler):
 	
 	@htmlCodes
 	def delete(self, projectKey, issueKey, key):
-		logging.info("delete request: "+ str(self.request))
 		comment = Comment().get(key)
 		comment.delete()
 		self.response.out.write(json(str(comment.key())))

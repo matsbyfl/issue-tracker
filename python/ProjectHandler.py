@@ -10,12 +10,10 @@ from lib.requestUtil import htmlCodes, getArgument
 class ProjectHandler(webapp.RequestHandler):
 	@htmlCodes
 	def get(self, key):
-		logging.info("get request: "+ str(self.request))
 		self.response.out.write( Project().get(key).toJSON() )
 		
 	@htmlCodes
 	def post(self, key): #update
-		logging.info("post request:"+ str(self.request))
 		project = Project().get(key)
 		project.name = getArgument(self.request, 'name', 'The "name" parameter can\'t be empty')
 		project.put()
@@ -25,7 +23,6 @@ class ProjectHandler(webapp.RequestHandler):
 
 	@htmlCodes		
 	def delete(self, key):
-		logging.info("delete request:"+ str(self.request))
 		keys = [key]
 		project = Project().get(key)
 		for issue in project.issues:
